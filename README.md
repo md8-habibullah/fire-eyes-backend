@@ -110,12 +110,6 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 
 ---
 
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
 ## 📬 Contact
 
 For any inquiries or feedback, please contact [md8-habibullah](https://github.com/md8-habibullah).
