@@ -27,7 +27,8 @@ export const createAlert = async (req, res) => {
 // Get all active alerts
 export const getActiveAlerts = async (req, res) => {
   try {
-    const alerts = await Alert.find({ status: 'ACTIVE' }).populate('userId');
+    // Show both ACTIVE and ACKNOWLEDGED
+    const alerts = await Alert.find({ status: { $in: ['ACTIVE', 'ACKNOWLEDGED'] } }).populate('userId');
     res.json(alerts);
   } catch (err) {
     res.status(500).json({ error: err.message });
