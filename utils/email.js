@@ -2,22 +2,25 @@ import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
+  host: 'smtp.gmail.com',
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   }
 });
 
-export async function sendAlertEmail(to, subject, text) {
+export async function sendAlertEmail(to, subject, text, html = null) {
   try {
-    await transporter.sendMail({
+    let info = await transporter.sendMail({
       from: `"Fire Eyes" <${process.env.EMAIL_USER}>`,
       to,
       subject,
-      text
+      text,
+      ...(html && { html })
     });
-    console.log(`[EMAIL] Sent to ${to} | Subject: ${subject}`);
+    console.log('[EMAIL] Sent:', info.messageId, 'to', to);
   } catch (err) {
-    console.error(`[EMAIL ERROR] Failed to send to ${to}:`, err.message);
+    console.error('[EMAIL ERROR]', err.message);
   }
 }
