@@ -1,16 +1,27 @@
 import Alert from '../models/Alert.js';
 import User from '../models/User.js';
 import { io } from '../index.js'; // import WebSocket server
+import { sendAlertEmail } from '../utils/email.js';
 
 export const createAlert = async (req, res) => {
   try {
     const { userId, type, location } = req.body;
-
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     const newAlert = new Alert({ userId, type, location });
     await newAlert.save();
+
+    // Send email to user
+    const subject = type === 'FIRE' ? '🔥 Fire Alert!' : '🛢️ Gas Leak Alert!';
+    const text = `Dear ${user.name},\n\nA ${type === 'FIRE' ? 'fire' : 'gas leak'} was detected for your device (${user.deviceId}). Please take action!`;
+
+    if (user.email) {
+      await sendAlertEmail(user.email, subject, text);
+    }
+
+    // Log to terminal
+    console.log(`[ALERT] New ${type} alert for user ${user.email} (${user.deviceId})`);
 
     // Populate userId before emitting
     const populatedAlert = await Alert.findById(newAlert._id).populate('userId');
@@ -50,6 +61,9 @@ export const updateAlertStatus = async (req, res) => {
     if (!updatedAlert) return res.status(404).json({ error: 'Alert not found' });
 
     io.emit('alert_updated', updatedAlert);
+
+    // Log to terminal
+    console.log(`[ALERT] Status updated: ${updatedAlert.type} (${updatedAlert._id}) -> ${status}`);
 
     res.json({ message: 'Alert status updated', alert: updatedAlert });
   } catch (err) {
