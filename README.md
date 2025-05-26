@@ -1,27 +1,36 @@
 # 🔥 Fire Eyes Backend
 
-An Express.js REST API designed to support the Fire Eyes web application. This backend handles user authentication, product management, and integrates with MongoDB for data persistence.
+A Node.js + Express REST API and real-time WebSocket server for the [Fire Eyes Dashboard](../fire-eyes-dashboard).  
+This backend manages users, fire/gas alerts, and provides instant updates to all connected clients.
+
+---
+
+## 📋 Description
+
+The Fire Eyes backend powers a real-time fire and gas safety dashboard.  
+It handles user/device registration, alert creation, status updates, and broadcasts all changes instantly via Socket.IO.
 
 ---
 
 ## 🚀 Features
 
-* User Registration & Authentication
-* JWT-based Authorization
-* CRUD Operations for Products
-* MongoDB Integration with Mongoose
-* Environment Variable Configuration
+- User registration and management
+- Device-based user lookup
+- Fire and gas leak alert creation
+- Alert status updates (active, acknowledged, resolved)
+- Real-time alert push via WebSockets (Socket.IO)
+- MongoDB integration with Mongoose
+- CORS support for frontend integration
 
 ---
 
-## 🛠️ Technologies Used
+## 🛠️ Tech Stack
 
-* Node.js
-* Express.js
-* MongoDB
-* Mongoose
-* JWT
-* dotenv
+- Node.js
+- Express.js
+- MongoDB + Mongoose
+- Socket.IO
+- dotenv
 
 ---
 
@@ -42,20 +51,20 @@ An Express.js REST API designed to support the Fire Eyes web application. This b
 
 3. **Set up environment variables:**
 
-   * Create a `.env` file in the root directory.
-   * Add the following variables:
+   Create a `.env` file in the root directory with:
 
-     ```env
-     PORT=5000
-     MONGODB_URI=your_mongodb_connection_string
-     JWT_SECRET=your_jwt_secret
-     ```
+   ```env
+   MONGO_URI=your_mongodb_connection_string
+   MONGO_DB=fire-eyes
+   ```
 
 4. **Start the server:**
 
    ```bash
-   npm start
+   npm run dev
    ```
+
+   The backend will run on [http://localhost:5000](http://localhost:5000) by default.
 
 ---
 
@@ -63,55 +72,73 @@ An Express.js REST API designed to support the Fire Eyes web application. This b
 
 ```
 fire-eyes-backend/
-├── controllers/
-├── models/
-├── routes/
-├── middleware/
+├── controllers/      # Business logic for users and alerts
+│   ├── alertController.js
+│   └── userController.js
+├── models/           # Mongoose schemas
+│   ├── Alert.js
+│   └── User.js
+├── routes/           # Express route handlers
+│   ├── alerts.js
+│   └── users.js
+├── config.js         # MongoDB connection
+├── index.js          # Main server entry (Express + Socket.IO)
 ├── .env
-├── .gitignore
 ├── package.json
-└── server.js
+└── README.md
 ```
 
 ---
 
 ## 🧪 API Endpoints
 
-### Authentication
+### Users
 
-* **POST** `/api/auth/register` - Register a new user
-* **POST** `/api/auth/login` - Login and receive JWT
+- `POST   /api/users/register` — Register a new user/device
+- `GET    /api/users` — List all users
+- `PUT    /api/users/:id` — Update user info
+- `DELETE /api/users/:id` — Delete a user
 
-### Products
+### Alerts
 
-* **GET** `/api/products` - Retrieve all products
-* **GET** `/api/products/:id` - Retrieve a product by ID
-* **POST** `/api/products` - Create a new product
-* **PUT** `/api/products/:id` - Update a product by ID
-* **DELETE** `/api/products/:id` - Delete a product by ID
+- `POST   /api/alerts` — Create a new alert (fire/gas)
+- `GET    /api/alerts/active` — Get all active/acknowledged alerts
+- `PATCH  /api/alerts/:alertId` — Update alert status
+- `GET    /api/alerts/user/:deviceId` — Get all alerts for a device
+
+---
+
+## 🔌 Real-Time Events
+
+- **WebSocket (Socket.IO) events:**
+  - `new_alert` — Sent to all clients when a new alert is created
+  - `alert_updated` — Sent to all clients when an alert status changes
 
 ---
 
 ## 🛡️ Environment Variables
 
-Ensure you have a `.env` file with the following variables:
+Example `.env`:
 
 ```env
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+MONGO_URI=your_mongodb_connection_string
+MONGO_DB=fire-eyes
 ```
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
+Pull requests and suggestions are welcome!  
+Please open an issue or PR for improvements.
 
 ---
 
-## 📬 Contact
+## 🖼️ Credits
 
-For any inquiries or feedback, please contact [md8-habibullah](https://github.com/md8-habibullah).
+- **Fire & Gas animated icons:**  
+  [Freepik - Flaticon](https://www.flaticon.com/free-animated-icons/fire)
 
 ---
+
+**Made with ❤️ for fire and gas safety.**
