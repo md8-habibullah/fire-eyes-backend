@@ -12,13 +12,15 @@ export const createAlert = async (req, res) => {
     const newAlert = new Alert({ userId, type, location });
     await newAlert.save();
 
-    // 🚨 Emit alert to all connected clients
+    // Populate userId before emitting
+    const populatedAlert = await Alert.findById(newAlert._id).populate('userId');
+
+    // 🚨 Emit alert to all connected clients with user info
     io.emit('new_alert', {
-      alert: newAlert,
-      user,
+      alert: populatedAlert,
     });
 
-    res.status(201).json({ message: 'Alert created', alert: newAlert });
+    res.status(201).json({ message: 'Alert created', alert: populatedAlert });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -41,18 +43,15 @@ export const updateAlertStatus = async (req, res) => {
     const { alertId } = req.params;
     const { status } = req.body;
 
-    const alert = await Alert.findByIdAndUpdate(
-      alertId,
-      { status },
-      { new: true }
-    );
+    await Alert.findByIdAndUpdate(alertId, { status });
 
-    if (!alert) return res.status(404).json({ error: 'Alert not found' });
+    // Populate userId before emitting
+    const updatedAlert = await Alert.findById(alertId).populate('userId');
+    if (!updatedAlert) return res.status(404).json({ error: 'Alert not found' });
 
-    // Optionally emit update to clients
-    io.emit('alert_updated', alert);
+    io.emit('alert_updated', updatedAlert);
 
-    res.json({ message: 'Alert status updated', alert });
+    res.json({ message: 'Alert status updated', alert: updatedAlert });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
