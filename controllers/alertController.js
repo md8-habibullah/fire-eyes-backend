@@ -25,7 +25,7 @@ A potential ${type === 'FIRE' ? 'fire' : 'gas leak'} has been detected.
 
 🚨 Alert Details:
 • Type: ${type}
-• Location: ${location && location.lat && location.lng ? `Lat: ${location.lat}, Lng: ${location.lng}` : 'Unknown'}
+• Location: ${location && location.lat && location.lng ? `Lat: ${location.lat}, Lng: ${location.lng}` : 'Unknown (no sensor detected)'}
 
 👤 Your Info:
 • Name: ${user.name}
