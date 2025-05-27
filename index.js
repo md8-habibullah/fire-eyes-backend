@@ -18,7 +18,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/alerts', alertRoutes);
 
 const server = http.createServer(app);
-
+ 
 // 🔌 Setup WebSocket server
 const io = new Server(server, {
   cors: {
