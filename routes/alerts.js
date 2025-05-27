@@ -26,4 +26,31 @@ router.get('/user/:deviceId', async (req, res) => {
   }
 });
 
+// POST /api/alerts/gas/:deviceId - Trigger GAS alert by deviceId
+router.post('/gas/:deviceId', async (req, res) => {
+  try {
+    const deviceId = req.params.deviceId.toLowerCase();
+    const user = await User.findOne({ deviceId });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Create GAS alert
+    const newAlert = new Alert({
+      userId: user._id,
+      type: 'GAS_LEAK',
+      location: req.body.location || { lat: 0, lng: 0 }
+    });
+    await newAlert.save();
+
+    // Populate userId for socket emit
+    const populatedAlert = await Alert.findById(newAlert._id).populate('userId');
+
+    // Emit to all clients
+    req.app.get('io')?.emit?.('new_alert', { alert: populatedAlert });
+
+    res.status(201).json({ message: 'Gas alert created', alert: populatedAlert });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;

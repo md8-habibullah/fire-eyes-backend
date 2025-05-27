@@ -34,6 +34,12 @@ io.on('connection', (socket) => {
   });
 });
 
+// Middleware to set io instance
+app.use((req, res, next) => {
+  req.app.set('io', io);
+  next();
+});
+
 // 🔥 Export io to use in controllers
 export { io };
 
