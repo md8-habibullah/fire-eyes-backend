@@ -14,7 +14,35 @@ export const createAlert = async (req, res) => {
 
     // Send email to user
     const subject = type === 'FIRE' ? '🔥 Fire Alert!' : '🛢️ Gas Leak Alert!';
-    const text = `Dear ${user.name},\n\nA ${type === 'FIRE' ? 'fire' : 'gas leak'} was detected for your device (${user.deviceId}). Please take action!`;
+    const text = `
+🔥 EMERGENCY ALERT: ${type === 'FIRE' ? 'FIRE DETECTED' : 'GAS LEAK DETECTED'} 🔥
+
+Dear ${user.name},
+
+This is an urgent notification from the Fire Eyes system.
+
+A potential ${type === 'FIRE' ? 'fire' : 'gas leak'} has been detected.
+
+🚨 Alert Details:
+• Type: ${type}
+• Location: ${location && location.lat && location.lng ? `Lat: ${location.lat}, Lng: ${location.lng}` : 'Unknown'}
+
+👤 Your Info:
+• Name: ${user.name}
+• Device ID: ${user.deviceId}
+• Email: ${user.email}
+• Phone: ${user.phone || 'N/A'}
+• Address: ${user.address || 'N/A'}
+
+⚠️ Please take immediate action to ensure your safety.
+
+📞 Contact emergency services now:
+• Fire & Police: Call 999
+• Fire Service: Call 102
+
+Stay safe,
+— Fire Eyes Team
+    `.trim();
 
     if (user.email) {
       await sendAlertEmail(user.email, subject, text);
