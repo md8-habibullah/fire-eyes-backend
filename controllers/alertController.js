@@ -15,7 +15,7 @@ export const createAlert = async (req, res) => {
     // Send email to user
     const subject = type === 'FIRE' ? '🔥 Fire Alert!' : '🛢️ Gas Leak Alert!';
     const text = `
-🔥 EMERGENCY ALERT: ${type === 'FIRE' ? 'FIRE DETECTED' : 'GAS LEAK DETECTED'} 🔥
+EMERGENCY ALERT: ${type === 'FIRE' ? 'FIRE DETECTED' : 'GAS LEAK DETECTED'}
 
 Dear ${user.name},
 
@@ -23,29 +23,58 @@ This is an urgent notification from the Fire Eyes system.
 
 A potential ${type === 'FIRE' ? 'fire' : 'gas leak'} has been detected.
 
-🚨 Alert Details:
-• Type: ${type}
-• Location: ${location && location.lat && location.lng ? `Lat: ${location.lat}, Lng: ${location.lng}` : 'Unknown (no sensor detected)'}
+Alert Details:
+- Type: ${type}
+- Location: ${location && location.lat && location.lng ? `Lat: ${location.lat}, Lng: ${location.lng}` : 'Unknown'}
 
-👤 Your Info:
-• Name: ${user.name}
-• Device ID: ${user.deviceId}
-• Email: ${user.email}
-• Phone: ${user.phone || 'N/A'}
-• Address: ${user.address || 'N/A'}
+Your Info:
+- Name: ${user.name}
+- Device ID: ${user.deviceId}
+- Email: ${user.email}
+- Phone: ${user.phone || 'N/A'}
+- Address: ${user.address || 'N/A'}
 
-⚠️ Please take immediate action to ensure your safety.
+Please take immediate action to ensure your safety.
 
-📞 Contact emergency services now:
-• Fire & Police: Call 999
-• Fire Service: Call 102
+Contact emergency services now:
+- Fire & Police: Call 999
+- Fire Service: Call 102
 
 Stay safe,
-— Fire Eyes Team
-    `.trim();
+Fire Eyes Team
+`.trim();
+
+    const html = `
+  <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px;background:#fff;border-radius:12px;border:1px solid #eee;">
+    <h2 style="color:#d32f2f;">🔥 EMERGENCY ALERT: ${type === 'FIRE' ? 'FIRE DETECTED' : 'GAS LEAK DETECTED'} 🔥</h2>
+    <p>Dear <b>${user.name}</b>,</p>
+    <p>This is an urgent notification from the <b>Fire Eyes</b> system.</p>
+    <p>A potential <b>${type === 'FIRE' ? 'fire' : 'gas leak'}</b> has been detected.</p>
+    <h3>🚨 Alert Details:</h3>
+    <ul>
+      <li><b>Type:</b> ${type}</li>
+      <li><b>Location:</b> ${location && location.lat && location.lng ? `Lat: ${location.lat}, Lng: ${location.lng}` : 'Unknown'}</li>
+    </ul>
+    <h3>👤 Your Info:</h3>
+    <ul>
+      <li><b>Name:</b> ${user.name}</li>
+      <li><b>Device ID:</b> ${user.deviceId}</li>
+      <li><b>Email:</b> ${user.email}</li>
+      <li><b>Phone:</b> ${user.phone || 'N/A'}</li>
+      <li><b>Address:</b> ${user.address || 'N/A'}</li>
+    </ul>
+    <p style="color:#d32f2f;font-weight:bold;">⚠️ Please take immediate action to ensure your safety.</p>
+    <p>
+      <b>Contact emergency services now:</b><br>
+      • Fire & Police: <b>Call 999</b><br>
+      • Fire Service: <b>Call 102</b>
+    </p>
+    <p style="margin-top:32px;">Stay safe,<br><b>Fire Eyes Team</b></p>
+  </div>
+`;
 
     if (user.email) {
-      await sendAlertEmail(user.email, subject, text);
+      await sendAlertEmail(user.email, subject, text, html);
     }
 
     // Log to terminal
