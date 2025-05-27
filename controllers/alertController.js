@@ -15,34 +15,34 @@ export const createAlert = async (req, res) => {
     // Send email to user
     const subject = type === 'FIRE' ? '🔥 Fire Alert!' : '🛢️ Gas Leak Alert!';
     const text = `
-EMERGENCY ALERT: ${type === 'FIRE' ? 'FIRE DETECTED' : 'GAS LEAK DETECTED'}
+  EMERGENCY ALERT: ${type === 'FIRE' ? 'FIRE DETECTED' : 'GAS LEAK DETECTED'}
 
-Dear ${user.name},
+  Dear ${user.name},
 
-This is an urgent notification from the Fire Eyes system.
+  This is an urgent notification from the Fire Eyes system.
 
-A potential ${type === 'FIRE' ? 'fire' : 'gas leak'} has been detected.
+  A potential ${type === 'FIRE' ? 'fire' : 'gas leak'} has been detected.
 
-Alert Details:
-- Type: ${type}
-- Location: ${location && location.lat && location.lng ? `Lat: ${location.lat}, Lng: ${location.lng}` : 'Unknown'}
+  Alert Details:
+  - Type: ${type}
+  - Location: ${location && location.lat && location.lng ? `Lat: ${location.lat}, Lng: ${location.lng}` : 'Unknown - (Sensor not detected)'}
 
-Your Info:
-- Name: ${user.name}
-- Device ID: ${user.deviceId}
-- Email: ${user.email}
-- Phone: ${user.phone || 'N/A'}
-- Address: ${user.address || 'N/A'}
+  Your Info:
+  - Name: ${user.name}
+  - Device ID: ${user.deviceId}
+  - Email: ${user.email}
+  - Phone: ${user.phone || 'N/A'}
+  - Address: ${user.address || 'N/A'}
 
-Please take immediate action to ensure your safety.
+  Please take immediate action to ensure your safety.
 
-Contact emergency services now:
-- Fire & Police: Call 999
-- Fire Service: Call 102
+  Contact emergency services now:
+  - Fire & Police: Call 999
+  - Fire Service: Call 102
 
-Stay safe,
-Fire Eyes Team
-`.trim();
+  Stay safe,
+  Fire Eyes Team
+  `.trim();
 
     const html = `
   <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px;background:#fff;border-radius:12px;border:1px solid #eee;">
