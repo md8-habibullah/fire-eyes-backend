@@ -9,6 +9,24 @@ export const createAlert = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
+    // Check for existing active or acknowledged alert
+    const existingAlert = await Alert.findOne({
+      userId,
+      type,
+      status: { $in: ['ACTIVE', 'ACKNOWLEDGED'] },
+    });
+
+    let alert;
+    if (existingAlert) {
+      // Update existing alert's timestamp
+      existingAlert.timestamp = new Date();
+      await existingAlert.save();
+      alert = await Alert.findById(existingAlert._id).populate('userId');
+      io.emit('alert_updated', alert);
+      return res.status(200).json({ message: `${type} alert timestamp updated`, alert });
+    }
+
+    // Create new alert
     const newAlert = new Alert({ userId, type, location });
     await newAlert.save();
 
