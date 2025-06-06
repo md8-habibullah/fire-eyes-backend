@@ -10,6 +10,9 @@ This backend manages users, fire/gas alerts, and provides instant updates to all
 The Fire Eyes backend powers a real-time fire and gas safety dashboard.  
 It handles user/device registration, alert creation, status updates, and broadcasts all changes instantly via Socket.IO.
 
+> 👉 Looking for the frontend? Check out the dashboard here:  
+> **[🔗 Fire Eyes Dashboard (Frontend)](https://github.com/md8-habibullah/fire-eyes-dashboard)**
+
 ---
 
 ## 🚀 Features
